@@ -2,12 +2,12 @@
 MedPAO-Fast — Gradio Interface
 Run: python gradio_app.py
 
-Requires agent.py (with full_agent compiled graph) in the same directory.
+Requires langgraph_agent.py (with full_agent compiled graph) in the same directory.
 """
 import os
 import time
 
-os.environ['HF_HOME'] = '/media/shrish/Data/huggingface_models'
+os.environ['HF_HOME'] = '/media/shrish/Data/huggingface_models' # set the huggingface cache directory to a custom path
 import gradio as gr
 import json
 import time

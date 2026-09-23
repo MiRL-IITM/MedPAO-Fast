@@ -5,10 +5,16 @@ grpo-qwen3-4b-cxr-multi-input/
 medpao_env/
 cpu_codes/cpu_env/
 
+all_caches/
+all_predictions/
+
 qwen3_conc_ext/
 
 wandb/
 
+hf_upload/
+
+cpu_codes/
 
 .gradio/
 __pycache__/
@@ -18,5 +24,7 @@ cpu_codes/llama.cpp/
 snomed_index/
 cpu_codes/gguf_models/
 cpu_codes/snomed_index/
+cpu_codes/snomed_rich_index_less_conc/
 
 sample.py
+TODOs.md

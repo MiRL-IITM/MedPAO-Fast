@@ -1,7 +1,9 @@
 import os
 import time
 
-os.environ['HF_HOME'] = '/media/shrish/Data/huggingface_models'
+os.environ['HF_HOME'] = '/media/shrish/Data/huggingface_models'             #set the huggingface cache directory to a custom path
+CONC_EXTRACTOR_PATH = "qwen3_conc_ext/checkpoint-330"                       #set the path to the concept extractor LoRA adapter
+CONC_CATEGORIZER_PATH = "grpo-qwen3-4b-cxr-multi-input/lora-adapter-final"  #set the path to the concept categorizer LoRA adapter
 
 import torch
 import re
@@ -53,11 +55,10 @@ else:
     print("Loading LoRA Adapters...")
     model = PeftModel.from_pretrained(
         base_model,
-        "/media/shrish/Data/medpao_fast/qwen3_conc_ext/checkpoint-330",
+        CONC_EXTRACTOR_PATH,
         adapter_name="get_concept",
     )
-    model.load_adapter("/media/shrish/Data/medpao_fast/grpo-qwen3-4b-cxr/lora-adapter-final", adapter_name="concept_categorizer")
-    model.load_adapter("/media/shrish/Data/medpao_fast/grpo-qwen3-4b-cxr-multi-input/lora-adapter-final", adapter_name="concept_categorizer_multi")
+    model.load_adapter(CONC_CATEGORIZER_PATH, adapter_name="concept_categorizer_multi")
 
 
 # ==========================================
@@ -551,7 +552,7 @@ def run_categorize_concepts_tool(state: AgentState):
     
     # 3. Increase max_new_tokens to accommodate the larger JSON dictionary
     # A batch of ~20 concepts will require roughly 400-600 tokens to generate safely.
-    response = generate_with_adapter(final_prompt, adapter_name="concept_categorizer_multi", max_new_tokens=1024)
+    response = generate_with_adapter(final_prompt, adapter_name="default", max_new_tokens=1024)
 
     # 4. Your parse_response function will now return the full dictionary in one pass
     final_response = parse_response(response, tool_name="categorize_concepts")   
