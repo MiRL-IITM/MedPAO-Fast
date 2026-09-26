@@ -84,36 +84,47 @@ if __name__ == "__main__":
 
     predicted = []
     for item in tqdm(gt):
-        report = item[args.report_key]
+        try:
+            report = item[args.report_key]
 
-        _base = {
-            "input_report":                  report,
-            "input_findings":                "",
-            "modules_queue":                 [],
-            "concepts":                      {},
-            "existing_categorized_concepts": {},
-            "new_categorized_concepts":      {},
-            "ontology_mapping":              {},
-            "structured_report":             {},
-        }
+            _base = {
+                "input_report":                  report,
+                "input_findings":                "",
+                "modules_queue":                 [],
+                "concepts":                      {},
+                "existing_categorized_concepts": {},
+                "new_categorized_concepts":      {},
+                "ontology_mapping":              {},
+                "structured_report":             {},
+            }
 
-        out1 = full_agent.invoke({
-            **_base,
-            "user_query": args.user_query,
-        })
+            out1 = full_agent.invoke({
+                **_base,
+                "user_query": args.user_query,
+            })
 
-        element = {
-            "id": item[args.id_key],
-            "report": report,
-            "predicted concepts": ",".join(list(out1["concepts"].keys())),
-            "predicted_categorized_concepts": {
-                **out1["existing_categorized_concepts"],
-                **out1["new_categorized_concepts"],
-            },
-            "predicted_structured_report": out1["structured_report"],
-        }
+            element = {
+                "id": item[args.id_key],
+                "report": report,
+                "predicted concepts": ",".join(list(out1["concepts"].keys())),
+                "predicted_categorized_concepts": {
+                    **out1["existing_categorized_concepts"],
+                    **out1["new_categorized_concepts"],
+                },
+                "predicted_structured_report": out1["structured_report"],
+            }
 
-        predicted.append(element)
+            predicted.append(element)
+        except Exception as e:
+            element = {
+                "id": item[args.id_key],
+                "report": report,
+                "predicted concepts": "",
+                "predicted_categorized_concepts": {},
+                "predicted_structured_report": {},
+                "error": str(e),
+            }
+            predicted.append(element)
 
     with open(args.output_path, "w") as f:
         json.dump(predicted, f, indent=args.indent)
